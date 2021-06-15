@@ -27,6 +27,23 @@ export class UserService {
     });
   }
 
+  async update(id: number, data: UserUpdateDTO): Promise<User> {
+    const user = await this.findByEmailOrUsername(data.email, data.username);
+
+    if (user && user.id != id) {
+      throw new BadRequestException(
+        'Já existe um usuário com o email ou username informado.',
+      );
+    }
+    // TODO: Criar hook para atualizar o updatedAt
+    return await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
+
   async findByEmailOrUsername(email: string, username: string): Promise<User> {
     const user = await this.prisma.user.findFirst({
       where: {
