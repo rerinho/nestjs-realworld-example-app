@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 import appConfig from './config/app.config';
 
 const ENV = process.env.NODE_ENV;
@@ -14,6 +15,7 @@ const ENV = process.env.NODE_ENV;
       load: [appConfig],
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
