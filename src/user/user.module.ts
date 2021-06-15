@@ -7,5 +7,6 @@ import { Bcrypt } from '@shared/utils/hash';
 @Module({
   controllers: [UserController],
   providers: [UserService, PrismaService, Bcrypt],
+  exports: [UserService],
 })
 export class UserModule {}
