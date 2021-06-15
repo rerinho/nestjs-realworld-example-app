@@ -1,8 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { UserCreateDTO } from './dto';
+import { UserCreateDTO, UserUpdateDTO } from './dto';
 import { PrismaService } from '@shared/prisma.service';
 import { User } from '@prisma/client';
 import { Bcrypt } from '@shared/utils/hash';
+
+interface FindOptions {
+  id?: number;
+  email?: string;
+  username?: string;
+}
 
 @Injectable()
 export class UserService {
@@ -20,6 +26,7 @@ export class UserService {
       );
     }
 
+    // TODO: Criar hook para gerar a hash de senha
     data.password = this.hash.generate(data.password);
 
     return this.prisma.user.create({
@@ -49,6 +56,15 @@ export class UserService {
       where: {
         OR: [{ email }, { username }],
       },
+    });
+
+    return user;
+  }
+
+  async findBy(findOptions: FindOptions): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        ...findOptions,
       },
     });
 
