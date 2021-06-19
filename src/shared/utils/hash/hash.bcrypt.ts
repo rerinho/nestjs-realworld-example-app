@@ -12,3 +12,5 @@ export class Bcrypt implements IHash {
     return compareSync(data, encrypted);
   }
 }
+
+export default new Bcrypt();
