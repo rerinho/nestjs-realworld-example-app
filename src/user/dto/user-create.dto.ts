@@ -4,11 +4,13 @@ import {
   IsUrl,
   IsEmail,
   IsOptional,
+  IsAlphanumeric,
 } from 'class-validator';
 
 export class UserCreateDTO {
   @IsNotEmpty()
   @IsString()
+  @IsAlphanumeric()
   username: string;
 
   @IsNotEmpty()
