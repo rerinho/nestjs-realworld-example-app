@@ -7,7 +7,7 @@ export class AuthReadDTO {
   readonly bio: string;
   readonly image: string;
 
-  constructor(user: User, token) {
+  constructor(user: User, token: string) {
     this.email = user.email;
     this.token = token;
     this.username = user.username;
