@@ -3,18 +3,20 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { AuthService } from './auth.service';
 
 @Injectable()
 export class LocalAuthGuard implements CanActivate {
   constructor(private authService: AuthService) {}
 
-  async validate(email: string, password: string): Promise<any> {
+  async validate(email: string, password: string): Promise<User> {
     const user = await this.authService.validateUser(email, password);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Credenciais inválidas.');
     }
 
     return user;
@@ -23,11 +25,15 @@ export class LocalAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
 
-    const { user } = req.body;
+    const { email, password } = req.body?.user;
 
-    const validateUser = await this.validate(user.email, user.password);
+    if (!email || !password) {
+      throw new UnprocessableEntityException('Credenciais não informadas.');
+    }
 
-    req.user = validateUser;
+    const user = await this.validate(email, password);
+
+    req.user = user;
 
     return true;
   }
