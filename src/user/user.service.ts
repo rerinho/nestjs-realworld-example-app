@@ -2,7 +2,6 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { UserCreateDTO, UserUpdateDTO } from './dto';
 import { PrismaService } from '@shared/prisma.service';
 import { User } from '@prisma/client';
-import { Bcrypt } from '@shared/utils/hash';
 
 interface FindOptions {
   id?: number;
@@ -12,10 +11,7 @@ interface FindOptions {
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly hash: Bcrypt,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: UserCreateDTO): Promise<User> {
     const user = await this.findByEmailOrUsername(data.email, data.username);
@@ -26,15 +22,12 @@ export class UserService {
       );
     }
 
-    // TODO: Criar hook para gerar a hash de senha
-    data.password = this.hash.generate(data.password);
-
     return this.prisma.user.create({
       data,
     });
   }
 
-  async update(id: number, data: UserUpdateDTO): Promise<User> {
+  async update(id: number, data: UserUpdateDTO = null): Promise<User> {
     const user = await this.findByEmailOrUsername(data.email, data.username);
 
     if (user && user.id != id) {
@@ -42,7 +35,7 @@ export class UserService {
         'Já existe um usuário com o email ou username informado.',
       );
     }
-    // TODO: Criar hook para atualizar o updatedAt
+
     return await this.prisma.user.update({
       where: {
         id,
