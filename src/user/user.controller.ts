@@ -17,16 +17,19 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put('/user')
-  async update(@User('id') id: number, @Body('user') userData: UserUpdateDTO) {
-    const user = await this.userService.update(id, userData);
+  async update(
+    @User('id') userId: number,
+    @Body('user') userData: UserUpdateDTO,
+  ) {
+    const user = await this.userService.update(userId, userData);
 
     return new UserReadDTO(user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/user')
-  async find(@User('id') id: number) {
-    const user = await this.userService.findBy({ id });
+  async find(@User('id') userId: number) {
+    const user = await this.userService.findBy({ id: userId });
 
     return new UserReadDTO(user);
   }
