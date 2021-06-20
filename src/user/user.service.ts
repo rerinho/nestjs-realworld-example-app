@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserCreateDTO, UserUpdateDTO } from './dto';
 import { PrismaService } from '@shared/prisma.service';
 import { User } from '@prisma/client';
@@ -18,14 +14,6 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: UserCreateDTO): Promise<User> {
-    const user = await this.findByEmailOrUsername(data.email, data.username);
-
-    if (user) {
-      throw new BadRequestException(
-        'Já existe um usuário com o email ou username informado.',
-      );
-    }
-
     return this.prisma.user.create({
       data,
     });
@@ -44,16 +32,6 @@ export class UserService {
       },
       data,
     });
-  }
-
-  async findByEmailOrUsername(email: string, username: string): Promise<User> {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ email }, { username }],
-      },
-    });
-
-    return user;
   }
 
   async findBy(findOptions: FindOptions): Promise<User> {
