@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
-import hash from '@shared/utils/hash/hash.bcrypt';
 import { PrismaService } from '~/shared/prisma.service';
+import hash from '@shared/utils/hash/hash.bcrypt';
 
 export default {
   model: 'User',
@@ -21,15 +21,23 @@ async function beforeUpdate(params, prismaService: PrismaService) {
   const { password, email, username } = params.args.data;
 
   if (email) {
-    await checkAttributeAvailability('email', params.args, prismaService);
+    await checkBeforeUpdateAttributeAvailability(
+      'email',
+      params.args,
+      prismaService,
+    );
   }
 
   if (username) {
-    await checkAttributeAvailability('username', params.args, prismaService);
+    await checkBeforeUpdateAttributeAvailability(
+      'username',
+      params.args,
+      prismaService,
+    );
   }
 
   if (password) {
-    params.args.data.password = hashPassword(password);
+    params.args.data.password = generateHash(password);
   }
 }
 
@@ -37,18 +45,38 @@ async function beforeCreate(params, prismaService: PrismaService) {
   const { password } = params.args.data;
 
   await Promise.all([
-    checkAttributeAvailability('username', params.args, prismaService),
-    checkAttributeAvailability('email', params.args, prismaService),
+    checkBeforeCreateAttributeAvailability(
+      'username',
+      params.args,
+      prismaService,
+    ),
+    checkBeforeCreateAttributeAvailability('email', params.args, prismaService),
   ]);
 
   params.args.data.password = hash.generate(password);
 }
 
-function hashPassword(password) {
+function generateHash(password) {
   return hash.generate(password);
 }
 
-async function checkAttributeAvailability(
+async function checkBeforeCreateAttributeAvailability(
+  attributeName,
+  queryArgs,
+  prismaService: PrismaService,
+) {
+  const value = queryArgs.data[attributeName];
+
+  const user = await getUserByAttribute(attributeName, value, prismaService);
+
+  if (user) {
+    throw new BadRequestException(
+      `O ${attributeName} informado não está disponível.`,
+    );
+  }
+}
+
+async function checkBeforeUpdateAttributeAvailability(
   attributeName,
   queryArgs,
   prismaService: PrismaService,
@@ -57,12 +85,8 @@ async function checkAttributeAvailability(
   const { where } = queryArgs;
 
   const [user, targetUser] = await Promise.all([
+    getUserByAttribute(attributeName, value, prismaService),
     prismaService.user.findFirst({
-      where: {
-        [attributeName]: value,
-      },
-    }),
-    prismaService.user.findUnique({
       where,
     }),
   ]);
@@ -72,4 +96,16 @@ async function checkAttributeAvailability(
       `O ${attributeName} informado não está disponível.`,
     );
   }
+}
+
+async function getUserByAttribute(
+  attributeName,
+  value,
+  prismaService: PrismaService,
+) {
+  return prismaService.user.findFirst({
+    where: {
+      [attributeName]: value,
+    },
+  });
 }
