@@ -10,7 +10,7 @@ generator client {
 }
 
 model User {
-  @@map("user")
+  @@map("users")
   id        Int      @id @default(autoincrement())
   email     String   @unique
   username  String   @unique
