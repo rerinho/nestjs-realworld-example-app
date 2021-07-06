@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserCreateDTO, UserUpdateDTO } from './dto';
-import { PrismaService } from '@shared/prisma.service';
+import { PrismaService } from '~/shared/prisma.service';
 import { User } from '@prisma/client';
 
 interface FindOptions {
