@@ -40,10 +40,7 @@ export class ProfileController {
     @User('id') userId: number,
     @Param() profileParamsDTO: ProfileParamsDTO,
   ) {
-    const profile = await this.profileService.findProfile(
-      userId,
-      profileParamsDTO,
-    );
+    const profile = await this.profileService.find(userId, profileParamsDTO);
 
     return new ProfileReadDTO(profile);
   }
