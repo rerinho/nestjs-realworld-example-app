@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { PrismaService } from '~/shared/prisma.service';
-import hash from '@shared/utils/hash/hash.bcrypt';
+import hash from '~/shared/utils/hash/hash.bcrypt';
 
 export default {
   model: 'User',
@@ -37,7 +37,7 @@ async function beforeUpdate(params, prismaService: PrismaService) {
   }
 
   if (password) {
-    params.args.data.password = generateHash(password);
+    params.args.data.password = hash.generate(password);
   }
 }
 
@@ -54,10 +54,6 @@ async function beforeCreate(params, prismaService: PrismaService) {
   ]);
 
   params.args.data.password = hash.generate(password);
-}
-
-function generateHash(password) {
-  return hash.generate(password);
 }
 
 async function checkBeforeCreateAttributeAvailability(
