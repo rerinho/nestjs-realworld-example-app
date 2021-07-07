@@ -21,4 +21,28 @@ model User {
   updatedAt   DateTime  @updatedAt
   followers   User[]    @relation("user_follows")
   following   User[]    @relation("user_follows")
+  articles    Article[] @relation("user_articles")
+}
+
+model Article {
+  @@map("articles")
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  body        String
+  slug        String?   @unique
+  author      User      @relation("user_articles", fields: [authorId], references: [id])
+  authorId    Int      
+  tagList     Tag[]     @relation("article_tags")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Tag {
+  @@map("tags")
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  articles    Article[] @relation("article_tags")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
