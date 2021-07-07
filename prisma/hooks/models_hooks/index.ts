@@ -1,3 +1,4 @@
-import user from './user.hooks';
+import userHooks from './user.hooks';
+import articleHooks from './article.hooks';
 
-export default [user];
+export default [userHooks, articleHooks];
