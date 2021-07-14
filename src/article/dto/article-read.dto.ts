@@ -1,14 +1,14 @@
 import { ProfileReadDTO } from '~/profile/dto';
 
 export class ArticleReadDTO {
-  title: string;
-  description: string;
-  body: string;
-  tagList?: string[];
-  slug: string;
-  createdAt: Date;
-  updatedAt: Date;
-  author: ProfileReadDTO;
+  readonly title: string;
+  readonly description: string;
+  readonly body: string;
+  readonly tagList?: string[];
+  readonly slug: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  readonly author: ProfileReadDTO;
 
   constructor(article) {
     this.slug = article.slug;
