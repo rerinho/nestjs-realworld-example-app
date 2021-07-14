@@ -5,11 +5,11 @@ import {
   Body,
   Param,
   Delete,
-  Query,
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '~/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '~/auth/guard/jwt-auth.guard';
+import { ArticleAuthorizationGuard } from './guard/article-authorization.guard';
 import { User } from '~/user/decorators/user.decorator';
 import { ArticleService } from './article.service';
 import {
@@ -30,33 +30,45 @@ export class ArticleController {
     @Body('article') articleCreateDTO: ArticleCreateDTO,
   ) {
     const article = await this.articleService.create(articleCreateDTO, userId);
+
     return new ArticleReadDTO(article);
   }
 
   @Get()
-  findAll(@Query() query) {
-    return this.articleService.findAll(query);
+  async findAll() {
+    const articles = await this.articleService.findAll();
+
+    return articles.map((article) => new ArticleReadDTO(article));
   }
 
   @Get(':slug')
-  async findOne(@Param() articleParamsDTO: ArticleParamsDTO) {
-    const { slug } = articleParamsDTO;
-    const article = await this.articleService.findBySlug(articleParamsDTO.slug);
-    return new ArticleReadDTO(article);
+  async findOne(@Param() { slug }: ArticleParamsDTO) {
+    const article = await this.articleService.findBySlug(slug);
+
+    return article ? new ArticleReadDTO(article) : {};
   }
 
+  @UseGuards(ArticleAuthorizationGuard)
+  @UseGuards(JwtAuthGuard)
   @Put(':slug')
   async update(
-    @Param() articleParamsDTO: ArticleParamsDTO,
-    @Body() articleUpdateDTO: ArticleUpdateDTO,
+    @Param() { slug }: ArticleParamsDTO,
+    @User('id') userId: number,
+    @Body('article') articleUpdateDTO: ArticleUpdateDTO,
   ) {
-    const { slug } = articleParamsDTO;
-    const article = await this.articleService.update(slug, articleUpdateDTO);
+    const article = await this.articleService.update(
+      slug,
+      userId,
+      articleUpdateDTO,
+    );
+
     return new ArticleReadDTO(article);
   }
 
+  @UseGuards(ArticleAuthorizationGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':slug')
-  remove(@Param('slug') slug: string) {
+  async remove(@Param() { slug }: ArticleParamsDTO) {
     return this.articleService.remove(slug);
   }
 }
