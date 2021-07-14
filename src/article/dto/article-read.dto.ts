@@ -1,6 +1,7 @@
 import { ProfileReadDTO } from '~/profile/dto';
+import { ArticleType } from '../article.interface';
 
-export class ArticleReadDTO {
+export interface ArticleReadData {
   readonly title: string;
   readonly description: string;
   readonly body: string;
@@ -9,16 +10,20 @@ export class ArticleReadDTO {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly author: ProfileReadDTO;
+}
 
-  constructor(article) {
-    this.slug = article.slug;
-    this.title = article.title;
-    this.description = article.description;
-    this.body = article.body;
-    this.createdAt = article.createdAt;
-    this.updatedAt = article.updatedAt;
-    this.author = article.author
-      ? new ProfileReadDTO(article.author)
-      : undefined;
+export class ArticleReadDTO {
+  readonly article: ArticleReadData;
+
+  constructor(article: ArticleType) {
+    this.article = {
+      slug: article.slug,
+      title: article.title,
+      description: article.description,
+      body: article.body,
+      createdAt: article.createdAt,
+      updatedAt: article.updatedAt,
+      author: article.author ? new ProfileReadDTO(article.author) : undefined,
+    };
   }
 }

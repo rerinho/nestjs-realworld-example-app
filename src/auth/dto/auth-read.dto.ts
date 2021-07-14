@@ -1,17 +1,23 @@
-import { User } from '@prisma/client';
+import { Auth } from '../auth.interface';
 
-export class AuthReadDTO {
+interface AuthReadData {
   readonly email: string;
-  readonly token: string;
   readonly username: string;
   readonly bio: string;
   readonly image: string;
+  readonly token: string;
+}
 
-  constructor(user: User, token: string) {
-    this.email = user.email;
-    this.token = token;
-    this.username = user.username;
-    this.bio = user.bio;
-    this.image = user.image;
+export class AuthReadDTO {
+  readonly user: AuthReadData;
+
+  constructor(auth: Auth) {
+    this.user = {
+      email: auth.email,
+      token: auth.token,
+      username: auth.username,
+      bio: auth.bio,
+      image: auth.image,
+    };
   }
 }

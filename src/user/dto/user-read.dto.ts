@@ -1,15 +1,20 @@
 import { User } from '@prisma/client';
 
-export class UserReadDTO {
+interface UserReadData {
   readonly email: string;
   readonly username: string;
   readonly bio: string;
   readonly image: string;
+}
+export class UserReadDTO {
+  readonly user: UserReadData;
 
   constructor(user: User) {
-    this.email = user.email;
-    this.username = user.username;
-    this.bio = user.bio;
-    this.image = user.image;
+    this.user = {
+      email: user.email,
+      username: user.username,
+      bio: user.bio,
+      image: user.image,
+    };
   }
 }

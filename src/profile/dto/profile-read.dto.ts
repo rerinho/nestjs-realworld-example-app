@@ -1,15 +1,20 @@
 import { Profile } from '../profile.interface';
 
-export class ProfileReadDTO {
+interface ProfileReadData {
   readonly username: string;
   readonly bio: string;
   readonly image: string;
   readonly following: boolean;
+}
+export class ProfileReadDTO {
+  readonly profile: ProfileReadData;
 
   constructor(profile: Profile) {
-    this.username = profile.username;
-    this.bio = profile.bio;
-    this.image = profile.image;
-    this.following = profile.following;
+    this.profile = {
+      username: profile.username,
+      bio: profile.bio,
+      image: profile.image,
+      following: profile.following,
+    };
   }
 }
