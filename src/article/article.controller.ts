@@ -17,6 +17,7 @@ import {
   ArticleReadDTO,
   ArticleUpdateDTO,
   ArticleParamsDTO,
+  ArticleListReadDTO,
 } from './dto';
 
 @Controller('articles')
@@ -38,7 +39,7 @@ export class ArticleController {
   async findAll() {
     const articles = await this.articleService.findAll();
 
-    return articles.map((article) => new ArticleReadDTO(article));
+    return new ArticleListReadDTO(articles);
   }
 
   @Get(':slug')
@@ -46,6 +47,13 @@ export class ArticleController {
     const article = await this.articleService.findBySlug(slug);
 
     return article ? new ArticleReadDTO(article) : {};
+  }
+
+  @Get('feed')
+  async feed(@User('id') userId: number) {
+    const articles = await this.articleService.feed(userId);
+
+    return new ArticleListReadDTO(articles);
   }
 
   @UseGuards(ArticleAuthorizationGuard)

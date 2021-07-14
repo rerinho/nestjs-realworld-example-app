@@ -59,6 +59,26 @@ export class ArticleService {
     });
   }
 
+  async feed(userId: number) {
+    return this.prisma.article.findMany({
+      where: {
+        author: {
+          followers: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        author: true,
+      },
+    });
+  }
+
   async update(
     slug: string,
     userId: number,
