@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Put, Get, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '~/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '~/auth/guard/jwt-auth.guard';
 import { User } from './decorators/user.decorator';
 import { UserCreateDTO, UserReadDTO, UserUpdateDTO } from './dto';
 import { UserService } from './user.service';
@@ -28,7 +28,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/user')
-  async find(@User('id') userId: number) {
+  async findOne(@User('id') userId: number) {
     const user = await this.userService.findBy({ id: userId });
 
     return new UserReadDTO(user);

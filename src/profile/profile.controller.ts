@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { User } from '~/user/decorators/user.decorator';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '~/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '~/auth/guard/jwt-auth.guard';
 import { ProfileParamsDTO, ProfileReadDTO } from './dto';
 
 @Controller('profiles')
