@@ -12,6 +12,9 @@ export class AuthController {
   async login(@Request() req) {
     const token = await this.authService.login(req.user);
 
-    return new AuthReadDTO(req.user, token);
+    return new AuthReadDTO({
+      ...req.user,
+      token,
+    });
   }
 }
