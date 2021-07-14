@@ -1,6 +1,7 @@
-export interface Profile {
-  username: string;
-  bio: string;
-  image: string;
-  following: boolean;
+import { User } from '.prisma/client';
+
+interface ProfileData {
+  following?: boolean;
 }
+
+export type Profile = User & ProfileData;
