@@ -1,11 +1,7 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 
 import { ArticleService } from '../article.service';
+import { ArticleUnauthorizedException } from '../exception';
 @Injectable()
 export class ArticleAuthorizationGuard implements CanActivate {
   constructor(private readonly articleService: ArticleService) {}
@@ -22,9 +18,7 @@ export class ArticleAuthorizationGuard implements CanActivate {
       const article = await this.articleService.findBySlug(slug);
 
       if (article && article?.authorId !== user.id) {
-        throw new ForbiddenException(
-          'Você não tem permissão para acessar esse artigo.',
-        );
+        throw new ArticleUnauthorizedException();
       }
     }
 
