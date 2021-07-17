@@ -1,12 +1,9 @@
+import { UserReadData } from '~/user/dto';
 import { Auth } from '../auth.interface';
 
-interface AuthReadData {
-  readonly email: string;
-  readonly username: string;
-  readonly bio: string;
-  readonly image: string;
+type AuthReadData = UserReadData & {
   readonly token: string;
-}
+};
 
 export class AuthReadDTO {
   readonly user: AuthReadData;
