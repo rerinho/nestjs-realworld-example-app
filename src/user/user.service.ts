@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserCreateDTO, UserUpdateDTO } from './dto';
 import { PrismaService } from '~/shared/prisma.service';
 import { User } from '@prisma/client';
+import { UserNotFoundException } from './exception';
 
 interface FindOptions {
   id?: number;
@@ -23,7 +24,7 @@ export class UserService {
     const user = await this.findBy({ id: userId });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado.');
+      throw new UserNotFoundException();
     }
 
     return this.prisma.user.update({
