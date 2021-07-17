@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { ArticleModule } from './article/article.module';
 import { TagModule } from './tag/tag.module';
+import { CommentModule } from './comment/comment.module';
 import appConfig from './config/app.config';
 
 const ENV = process.env.NODE_ENV;
@@ -22,6 +23,7 @@ const ENV = process.env.NODE_ENV;
     ProfileModule,
     ArticleModule,
     TagModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
