@@ -1,8 +1,9 @@
-import { Article } from '@prisma/client';
+import { Article, Tag } from '@prisma/client';
 import { Profile } from '~/profile/profile.interface';
 
-interface AuthorData {
+interface ArticleIncludeData {
   author: Profile;
+  tagList?: Tag[];
 }
 
-export type ArticleType = Article & AuthorData;
+export type ArticleType = Article & ArticleIncludeData;
