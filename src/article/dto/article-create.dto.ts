@@ -14,6 +14,9 @@ export class ArticleCreateDTO {
   body: string;
 
   @IsArray()
+  @IsString({
+    each: true,
+  })
   @IsOptional()
   tagList?: string[];
 }
