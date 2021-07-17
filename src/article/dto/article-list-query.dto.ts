@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsNumberString } from 'class-validator';
 
 export class ArticleListQueryDTO {
   @IsOptional()
@@ -14,10 +14,10 @@ export class ArticleListQueryDTO {
   favorited?: string;
 
   @IsOptional()
-  @IsInt()
-  limit?: string;
+  @IsNumberString()
+  limit?: number;
 
   @IsOptional()
-  @IsInt()
-  offset?: string;
+  @IsNumberString()
+  offset?: number;
 }
