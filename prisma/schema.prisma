@@ -23,6 +23,7 @@ model User {
   followers       User[]    @relation("user_follows")
   following       User[]    @relation("user_follows")
   articles        Article[] @relation("user_articles")
+  comments        Comment[]
 }
 
 model Article {
@@ -37,6 +38,7 @@ model Article {
   tagList         Tag[]     @relation("article_tags")
   favoritesCount  Int       @default(0)
   favoritedBy     User[]    @relation("user_favorite_articles")
+  comments        Comment[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
@@ -48,4 +50,16 @@ model Tag {
   articles        Article[] @relation("article_tags")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+}
+
+model Comment {
+  @@map("comments")
+  id              Int         @default(autoincrement()) @id
+  body            String
+  article         Article     @relation(fields: [articleId], references: [id])
+  articleId       Int
+  author          User        @relation(fields: [authorId], references: [id])
+  authorId        Int
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @default(now())
 }
