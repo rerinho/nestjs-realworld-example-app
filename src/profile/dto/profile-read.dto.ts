@@ -1,6 +1,6 @@
 import { Profile } from '../profile.interface';
 
-interface ProfileReadData {
+export interface ProfileReadData {
   readonly username: string;
   readonly bio: string;
   readonly image: string;
