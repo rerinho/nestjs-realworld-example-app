@@ -66,9 +66,7 @@ async function checkBeforeCreateAttributeAvailability(
   const user = await getUserByAttribute(attributeName, value, prismaService);
 
   if (user) {
-    throw new BadRequestException(
-      `O ${attributeName} informado não está disponível.`,
-    );
+    throw new BadRequestException(`The ${attributeName} is not available.`);
   }
 }
 
@@ -88,9 +86,7 @@ async function checkBeforeUpdateAttributeAvailability(
   ]);
 
   if (user && user.id !== targetUser.id) {
-    throw new BadRequestException(
-      `O ${attributeName} informado não está disponível.`,
-    );
+    throw new BadRequestException(`The ${attributeName} is not available.`);
   }
 }
 
