@@ -11,38 +11,41 @@ generator client {
 
 model User {
   @@map("users")
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  username    String    @unique
-  password    String
-  bio         String?
-  image       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  followers   User[]    @relation("user_follows")
-  following   User[]    @relation("user_follows")
-  articles    Article[] @relation("user_articles")
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  username        String    @unique
+  password        String
+  bio             String?
+  image           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  favorites       Article[] @relation("user_favorite_articles")
+  followers       User[]    @relation("user_follows")
+  following       User[]    @relation("user_follows")
+  articles        Article[] @relation("user_articles")
 }
 
 model Article {
   @@map("articles")
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String
-  body        String
-  slug        String?   @unique
-  author      User      @relation("user_articles", fields: [authorId], references: [id])
-  authorId    Int      
-  tagList     Tag[]     @relation("article_tags")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              Int       @id @default(autoincrement())
+  title           String
+  description     String
+  body            String
+  slug            String?   @unique
+  author          User      @relation("user_articles", fields: [authorId], references: [id])
+  authorId        Int      
+  tagList         Tag[]     @relation("article_tags")
+  favoritesCount  Int       @default(0)
+  favoritedBy     User[]    @relation("user_favorite_articles")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model Tag {
   @@map("tags")
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  articles    Article[] @relation("article_tags")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              Int       @id @default(autoincrement())
+  name            String    @unique
+  articles        Article[] @relation("article_tags")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
