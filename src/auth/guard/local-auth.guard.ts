@@ -16,7 +16,7 @@ export class LocalAuthGuard implements CanActivate {
     const user = await this.authService.validateUser(email, password);
 
     if (!user) {
-      throw new UnauthorizedException('Credenciais inválidas.');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     return user;
@@ -28,7 +28,7 @@ export class LocalAuthGuard implements CanActivate {
     const { email, password } = req.body?.user;
 
     if (!email || !password) {
-      throw new UnprocessableEntityException('Credenciais não informadas.');
+      throw new UnprocessableEntityException('Credentials not entered.');
     }
 
     const user = await this.validate(email, password);
