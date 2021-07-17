@@ -7,9 +7,10 @@ import {
   Delete,
   Put,
   UseGuards,
+  Query,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '~/auth/guard/jwt-auth.guard';
-import { ArticleAuthorizationGuard } from './guard/article-authorization.guard';
+import { JwtAuthGuard } from '~/auth/guard';
+import { ArticleAuthorizationGuard } from './guard';
 import { User } from '~/user/decorators/user.decorator';
 import { ArticleService } from './article.service';
 import {
@@ -18,6 +19,8 @@ import {
   ArticleUpdateDTO,
   ArticleParamsDTO,
   ArticleListReadDTO,
+  ArticleListQueryDTO,
+  ArticleFeedQueryDTO,
 } from './dto';
 
 @Controller('articles')
@@ -36,8 +39,22 @@ export class ArticleController {
   }
 
   @Get()
-  async findAll() {
-    const articles = await this.articleService.findAll();
+  async findAll(@Query() articleListQueryDTO: ArticleListQueryDTO) {
+    const articles = await this.articleService.findAll(articleListQueryDTO);
+
+    return new ArticleListReadDTO(articles);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('feed')
+  async feed(
+    @User('id') userId: number,
+    @Query() articleFeedQueryDTO: ArticleFeedQueryDTO,
+  ) {
+    const articles = await this.articleService.feed(
+      userId,
+      articleFeedQueryDTO,
+    );
 
     return new ArticleListReadDTO(articles);
   }
@@ -46,14 +63,7 @@ export class ArticleController {
   async findOne(@Param() { slug }: ArticleParamsDTO) {
     const article = await this.articleService.findBySlug(slug);
 
-    return article ? new ArticleReadDTO(article) : {};
-  }
-
-  @Get('feed')
-  async feed(@User('id') userId: number) {
-    const articles = await this.articleService.feed(userId);
-
-    return new ArticleListReadDTO(articles);
+    return new ArticleReadDTO(article);
   }
 
   @UseGuards(ArticleAuthorizationGuard)
@@ -77,6 +87,30 @@ export class ArticleController {
   @UseGuards(JwtAuthGuard)
   @Delete(':slug')
   async remove(@Param() { slug }: ArticleParamsDTO) {
-    return this.articleService.remove(slug);
+    await this.articleService.remove(slug);
+
+    return { message: 'Article deleted.' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':slug/favorite')
+  async favorite(
+    @Param() { slug }: ArticleParamsDTO,
+    @User('id') userId: number,
+  ) {
+    const article = await this.articleService.favorite(slug, userId);
+
+    return new ArticleReadDTO(article);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':slug/favorite')
+  async unfavorite(
+    @Param() { slug }: ArticleParamsDTO,
+    @User('id') userId: number,
+  ) {
+    const article = await this.articleService.unfavorite(slug, userId);
+
+    return new ArticleReadDTO(article);
   }
 }
