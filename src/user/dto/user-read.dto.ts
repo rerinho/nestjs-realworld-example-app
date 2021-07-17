@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 
-interface UserReadData {
+export interface UserReadData {
   readonly email: string;
   readonly username: string;
   readonly bio: string;
